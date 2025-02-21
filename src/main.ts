@@ -12,9 +12,9 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-  const port = process.env.PORT ?? 3000
-  await app.listen(port);
+  // const port = process.env.PORT ?? 3000
+  await app.listen(process.env.PORT, '0.0.0.0');
 
-  console.log("ishlayapti", port)
+  // console.log("ishlayapti", port)
 }
 bootstrap();
