@@ -23,13 +23,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres', // or 'mysql', 'sqlite', etc.
-        host: configService.get('DB_HOST'),
-        port: +configService.get<number>('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_NAME'),
+        // host: configService.get('DB_HOST'),
+        // port: +configService.get<number>('DB_PORT'),
+        // username: configService.get('DB_USERNAME'),
+        // password: configService.get('DB_PASSWORD'),
+        // database: configService.get('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true, // Disable in production
+        synchronize: true,
+        url: process.env.DATABASE_URL,
+        retryAttempts: 5, // Retry more times before failing
+        retryDelay: 3000, // Disable in production
       }),
       inject: [ConfigService],
     }),
@@ -49,4 +52,4 @@ import { ServeStaticModule } from '@nestjs/serve-static';
   controllers: [AuthController, UsersController],
   providers: [AuthService, UsersService, JwtStrategy, AuthGuard, RoleGuard],
 })
-export class AppModule {}
+export class AppModule { }
