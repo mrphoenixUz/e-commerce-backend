@@ -18,21 +18,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Load environment variables
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres', // or 'mysql', 'sqlite', etc.
-        // host: configService.get('DB_HOST'),
-        // port: +configService.get<number>('DB_PORT'),
-        // username: configService.get('DB_USERNAME'),
-        // password: configService.get('DB_PASSWORD'),
-        // database: configService.get('DB_NAME'),
+        type: 'postgres',
         autoLoadEntities: true,
         synchronize: true,
         url: process.env.DATABASE_URL,
-        retryAttempts: 5, // Retry more times before failing
-        retryDelay: 3000, // Disable in production
+        retryAttempts: 5,
+        retryDelay: 3000,
       }),
       inject: [ConfigService],
     }),

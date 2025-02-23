@@ -9,6 +9,9 @@ export class Product {
   @Column()
   product_name: string;
 
+  @Column()
+  description: string;
+
   @Column('decimal')
   price: number;
 

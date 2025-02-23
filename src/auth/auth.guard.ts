@@ -14,19 +14,18 @@ export class AuthGuard extends BaseAuthGuard('jwt') {
     if (!canActivate) return false;
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
-    const user = request.user; // Now TypeScript knows request.user exists
+    const user = request.user;
 
     if (!user) {
       throw new UnauthorizedException('User not found in request');
     }
 
-    // Fetch full user details from DB
     const fullUser = await this.usersService.findById(user.id);
     if (!fullUser) {
       throw new UnauthorizedException('User not found in database');
     }
 
-    request.user = fullUser; // Attach full user to request
+    request.user = fullUser;
 
     return true;
   }

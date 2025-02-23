@@ -7,14 +7,14 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://phoenix-shop.mrphoenix.vip'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'https://phoenix-shop.mrphoenix.vip'],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-  // const port = process.env.PORT ?? 3000
-  await app.listen(process.env.PORT, '0.0.0.0');
+  const port = process.env.PORT ?? 3000
+  await app.listen(port, '0.0.0.0');
 
-  // console.log("ishlayapti", port)
+  console.log("ishlayapti", port)
 }
 bootstrap();

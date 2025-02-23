@@ -30,9 +30,10 @@ export class ProductsService {
 
     const product = this.productsRepo.create({
       product_name: data.product_name,
+      description: data.description,
       price: data.price,
       pictures: data.pictures || [],
-      category, // Assign category entity
+      category,
     });
 
     return this.productsRepo.save(product);
@@ -54,7 +55,7 @@ export class ProductsService {
 
   async search(query: string) {
     return this.productsRepo.find({
-      where: { product_name: ILike(`%${query}%`) }, // Case-insensitive search
+      where: { product_name: ILike(`%${query}%`) },
       relations: ['category'],
     });
   }

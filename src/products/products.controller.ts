@@ -6,6 +6,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Roles } from 'src/auth/roles.decorator';
+import { RoleGuard } from 'src/auth/role.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -22,22 +24,27 @@ export class ProductsController {
   }
 
   @Post()
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   create(@Body() data: CreateProductDto) {
     return this.productsService.create(data);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard, RoleGuard)
   update(@Param('id') id: number, @Body() data: UpdateProductDto) {
     return this.productsService.update(id, data);
   }
 
   @Delete(':id')
+  @Roles('admin')
   delete(@Param('id') id: number) {
     return this.productsService.delete(id);
   }
 
   @Post('upload/:id')
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   @UseInterceptors(
     FilesInterceptor('files', 5, { // Allow max 5 pictures
       storage: diskStorage({

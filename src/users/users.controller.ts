@@ -10,7 +10,6 @@ import {
   Request,
   UploadedFile,
   UseInterceptors,
-  ForbiddenException,
   Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -29,14 +28,12 @@ export class UsersController {
   @UseGuards(AuthGuard, RoleGuard)
   @Roles('admin')
   async getUsers(@Request() req) {
-    // console.log("userid", req.user);
     return this.usersService.findAll();
   }
 
   @Get('profile')
   @UseGuards(AuthGuard)
   async getProfile(@Request() req) {
-    console.log("userid", req.user);
     return this.usersService.findById(req.user.id);
   }
 
@@ -46,7 +43,8 @@ export class UsersController {
   }
 
   @Put('update')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async updateUser(@Req() req, @Body() data) {
     return this.usersService.update(req.user.id, data);
   }
@@ -58,7 +56,8 @@ export class UsersController {
   }
 
   @Post('upload')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -77,13 +76,15 @@ export class UsersController {
   }
 
   @Post('cart')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async addToCart(@Request() req, @Body('productId') productId: number, @Body('quantity') quantity: number) {
     return this.usersService.addToCart(req.user.id, productId, quantity);
   }
 
   @Put('cart')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async updateCart(
     @Request() req,
     @Body('productId') productId: number,
@@ -94,27 +95,30 @@ export class UsersController {
 
 
   @Delete('cart/:productId')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async removeFromCart(@Request() req, @Param('productId') productId: number) {
     return this.usersService.removeFromCart(req.user.id, Number(productId));
   }
 
 
   @Post('favourites')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async addToFavourites(@Request() req, @Body('productId') productId: string) {
     return this.usersService.addToFavourites(req.user.id, productId);
   }
 
   @Delete('favourites/:productId')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async removeFromFavourites(@Request() req, @Param('productId') productId: string) {
     return this.usersService.removeFromFavourites(req.user.id, productId);
   }
 
-
   @Post('orders')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   async addToOrders(
     @Request() req,
     @Body('productId') productId: number,
@@ -125,7 +129,7 @@ export class UsersController {
 
   @Post('approve-admin/:userId')
   @UseGuards(AuthGuard, RoleGuard)
-  @Roles("admin") // Only admins can approve new admins
+  @Roles("admin")
   async approveAdmin(@Request() req, @Param('userId') userId: number) {
     return this.usersService.approveAdmin(req.user.id, userId);
   }
